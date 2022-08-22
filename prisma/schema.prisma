@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String   @id @default(cuid())
+  firstName               String
+  lastName                String
+  username                String
+  email                   String   @unique
+  phoneNumber             String   @unique
+  countryCode             String   @default("254")
+  nationalId              String?  @unique
+  nationalIdFrontImageUrl String?
+  nationalIdBackImageUrl  String?
+  firstAddress            String?
+  secondAddress           String?
+  password                String
+  isActive                Boolean  @default(true) // Used to refer to locked accounts
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  offers                  Offer[]
+}
+
+//crypto model
+model Crypto {
+  id        Int      @id @default(autoincrement())
+  name      String
+  symbol    String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  offers    Offer[]
+}
+
+//fiat model
+model Fiat {
+  id        Int      @id @default(autoincrement())
+  name      String
+  symbol    String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  offer     Offer[]
+}
+
+//tradeduration model
+model TradeDuration {
+  id        Int          @id @default(autoincrement())
+  duration  Int
+  type      DurationType @default(MINUTES)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  offer     Offer[]
+}
+
+//offer model
+model Offer {
+  id                Int           @id @default(autoincrement())
+  chainId           String
+  contractAddress   String
+  user              User          @relation(fields: [userId], references: [id])
+  userId            String
+  crypto            Crypto        @relation(fields: [cryptoId], references: [id])
+  cryptoId          Int
+  fiat              Fiat          @relation(fields: [fiatId], references: [id])
+  fiatId            Int
+  duration          TradeDuration @relation(fields: [durationId], references: [id])
+  durationId        Int
+  priceType         PriceType
+  p2pType           P2PType       @default(SECURE)
+  offerType         OfferType
+  maximumAmount     Float
+  minimumAmount     Float
+  margin            Float
+  fixedRate         Float
+  offerTerms        String
+  tradeInstructions String
+  status            OfferStatus   @default(ACTIVE)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+}
+
+enum PriceType {
+  MARKET
+  FIXED
+}
+
+enum OfferType {
+  BUY
+  SELL
+}
+
+enum P2PType {
+  NORMAL
+  SECURE
+}
+
+enum OfferStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  COMPLETED
+}
+
+enum DurationType {
+  MINUTES
+  HOURS
+  DAYS
+  WEEK
+  MONTH
+}

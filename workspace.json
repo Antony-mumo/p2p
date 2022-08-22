@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "api": "apps/api",
+    "auth": "libs/auth",
+    "crypto": "libs/crypto",
+    "offers": "libs/offers",
+    "p2p": "apps/p2p",
+    "p2p-e2e": "apps/p2p-e2e",
+    "p2p-mobile": "apps/p2p-mobile",
+    "p2p-mobile-e2e": "apps/p2p-mobile-e2e",
+    "user": "libs/user"
+  }
+}
