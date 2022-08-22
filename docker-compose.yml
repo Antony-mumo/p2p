@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  dev-db:
+    image: p2p
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev
+      - POSTGRES_DB=p2p
+    ports:
+      - "5432:5432"
